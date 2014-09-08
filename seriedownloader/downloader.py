@@ -189,16 +189,16 @@ def unrar(filelist):
 
 if __name__ == '__main__':
 	print('Running in test mode')
-	#connection = rapidGatorConnection()
+	connection = rapidGatorConnection()
 	locations = []
 	for entry in processFile('links.txt'):
 		filelist = []
-		try:
-			for link in entry[3]:
+		for link in entry[3]:
+			try:
 				location = connection.download(link)
 				filelist.append(location)
-			locations.append(filelist)
-		except:
-			print('ERROR WITH LINK: {}'.format(link))	
+			except:
+				print('ERROR WITH LINK: {}'.format(link))
+		locations.append(filelist)
 	unrar(locations)
 
