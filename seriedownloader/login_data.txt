@@ -1,0 +1,1 @@
+{'telenet': ('dieter.mourisse@telenet.be', 'MYbrd7'), 'mysql': ('dieter', 'l2c0h18!'), 'netload' : ('1106106', 'l2c0h18!'), 'rapidgator' : ('dieter.mourisse@gmail.com', 'l2c0h18!')}
