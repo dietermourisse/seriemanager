@@ -185,7 +185,7 @@ def processFile(filename):
 def unrar(filelist):
 	os.system('cd {}'.format(downloaddir))
 	for file_ in filelist:
-		os.system('unrar e {}'.format(file_[0]))
+		os.system('unrar e {}'.format(file_[0][0]))
 
 if __name__ == '__main__':
 	print('Running in test mode')
