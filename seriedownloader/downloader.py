@@ -13,8 +13,6 @@ class rapidGatorConnection:
 		self.cj = cookiejar.CookieJar()
 		self.opener = None
 		self.chunksize = 16 * 1024
-		if not os.path.isdir(downloaddir):
-			os.mkdir(downloaddir)
 
 	def getName():
 		return 'rapidgator'
@@ -32,6 +30,7 @@ class rapidGatorConnection:
 		req = self.opener.open(url, data=postdata)
 
 	def download(self, link):
+		assert os.path.isdir(downloaddir), 'Download directory not found'
 		if not self.opener:
 			self.connect()
 		print(link)
@@ -80,8 +79,6 @@ class netLoadConnection:
 		self.opener = None
 		self.chunksize = 16 * 1024
 		#check if tempdir available
-		if not os.path.isdir(downloaddir):
-			os.mkdir(downloaddir)
 
 	def getName():
 		return 'netload'
@@ -101,6 +98,7 @@ class netLoadConnection:
 		req = self.opener.open(url, data=postdata)
 
 	def download(self, link):
+		assert os.path.isdir(downloaddir), 'Download directory not found'
 		if not self.opener:
 			self.connect()
 		req = self.opener.open(link, timeout = 5.0)
@@ -166,16 +164,41 @@ class Downloader:
 			locations.append(location)
 		return locations
 
+def processFile(filename):
+	bestand = open(filename, 'r')
+	lines = bestand.read().rstrip('\n').split('\n')
+	lineindex = 0
+	rlist = []
+	while lineindex < len(lines):
+		name = lines[lineindex]
+		season = lines[lineindex+1]
+		episode = lines[lineindex+2]
+		lineindex = lineindex+3
+		entry = (name, season, episode, [])
+		while lines[lineindex] != '-':
+			entry[3].append(lines[lineindex])
+			lineindex += 1
+		lineindex += 1
+		rlist.append(entry)
+	return rlist
 
+def unrar(filelist):
+	os.system('cd {}'.format(downloaddir))
+	for file_ in filelist:
+		os.system('unrar e {}'.format(file_[0]))
 
 if __name__ == '__main__':
 	print('Running in test mode')
-	connection = rapidGatorConnection()
-	for link in open('links.txt', 'r'):
+	#connection = rapidGatorConnection()
+	locations = []
+	for entry in processFile('links.txt'):
+		filelist = []
 		try:
-			location = connection.download(link)
-			print(location)
+			for link in entry[3]:
+				location = connection.download(link)
+				filelist.append(location)
+			locations.append(filelist)
 		except:
 			print('ERROR WITH LINK: {}'.format(link))	
-	#connection.download_links(['http://rapidgator.net/file/c982d8f7d98236618bcca99397940ed9/The.Legend.of.Korra.S03E11.The.Ultimatum.720p.WEBRip.x264.AAC.mp4.html'])
+	unrar(locations)
 
